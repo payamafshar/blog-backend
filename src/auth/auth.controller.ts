@@ -32,11 +32,10 @@ export class AuthController {
     return response.send(request.currentUser);
   }
 
-  @Post('logout')
   //can be handle from front with removing cookie
+  @Post('logout')
   async logoutUser(@Res({ passthrough: true }) response: Response) {
     response.cookie('userToken', null, { maxAge: 1 });
-
     return;
   }
 }

@@ -19,9 +19,15 @@ import AuthWithCookie from './middlewares/authWithCookie';
 })
 export class AuthModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthWithCookie).forRoutes({
-      path: 'auth/status',
-      method: RequestMethod.GET,
-    });
+    consumer.apply(AuthWithCookie).forRoutes(
+      {
+        path: 'auth/status',
+        method: RequestMethod.GET,
+      },
+      {
+        path: 'auth/logout',
+        method: RequestMethod.POST,
+      },
+    );
   }
 }

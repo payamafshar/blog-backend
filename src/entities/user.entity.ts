@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { CommentEntity } from './comment.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -13,4 +14,7 @@ export class UserEntity {
 
   @Column({ type: 'bigint' })
   otpExpiresin: number;
+
+  @OneToMany(() => CommentEntity, (comment) => comment.user)
+  comments: CommentEntity[];
 }
