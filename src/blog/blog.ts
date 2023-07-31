@@ -15,4 +15,6 @@ export interface IBlogService {
   getBlogBySlug(slug: string): Promise<BlogEntity>;
 
   likeToggleBlogById(blogId: number, user: UserEntity): Promise<LikeEntity>;
+
+  deleteBlogById(blogId: number): void;
 }

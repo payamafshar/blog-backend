@@ -8,6 +8,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { Routes, Services } from 'src/utils/constants';
 import { CreateBlogDto } from './dtos/createblog.dto';
@@ -51,5 +52,10 @@ export class BlogController {
     @AuthUser() user: UserEntity,
   ) {
     return this.blogService.likeToggleBlogById(blogId, user);
+  }
+
+  @Delete('/:blogId')
+  deleteBlogById(@Param('blogId', ParseIntPipe) blogId: number) {
+    return this.blogService.deleteBlogById(blogId);
   }
 }

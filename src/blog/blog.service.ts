@@ -92,6 +92,11 @@ export class BlogService implements IBlogService {
     return this.likeRepository.save(findedLikeWithBlogId);
   }
 
+  async deleteBlogById(blogId: number): Promise<void> {
+    await this.likeRepository.delete({ blog: { id: blogId } });
+    await this.blogRepository.delete(blogId);
+  }
+
   validateIncominImage(file: Express.Multer.File) {
     let image: string;
     if (file) {
