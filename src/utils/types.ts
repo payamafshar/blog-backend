@@ -11,7 +11,7 @@ export type CreateOtpResponse = {
 
 export type CheckOtpParams = {
   email: string;
-  code: number;
+  code: string;
 };
 
 export interface AuthenticatedRequest extends Request {

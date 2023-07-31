@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class CheckOtpDto {
   @IsNotEmpty()
@@ -6,6 +6,6 @@ export class CheckOtpDto {
   email: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  code: number;
+  @IsString()
+  code: string;
 }

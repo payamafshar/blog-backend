@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { UserEntity } from 'src/entities/user.entity';
-import { Repositories } from 'src/utils/constants';
+import { Repositories, Services } from 'src/utils/constants';
 import { Repository } from 'typeorm';
 import { IAuthService } from './auth';
 import {
@@ -20,8 +20,8 @@ export class AuthService implements IAuthService {
   constructor(
     @Inject(Repositories.USER)
     private readonly userRepository: Repository<UserEntity>,
+    @Inject(Services.MAILER) private readonly mailService: MailerService,
     private readonly configService: ConfigService,
-    private readonly mailService: MailerService,
   ) {}
 
   async getOtp(createOtpParam: CreateOtpParam): Promise<void> {
@@ -41,7 +41,9 @@ export class AuthService implements IAuthService {
 
       return await this.mailService.sendUserConfirmation(user);
     }
-    await this.userRepository.update({ email }, { otpCode, otpExpiresin });
+    user.otpCode = otpCode;
+    user.otpExpiresin = otpExpiresin;
+    await this.userRepository.save(user);
     return await this.mailService.sendUserConfirmation(user);
   }
 

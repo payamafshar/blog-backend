@@ -8,6 +8,7 @@ export enum Routes {
 export enum Services {
   AUTH = 'AUTH_SERVICE',
   BLOG = 'BLOG_SERVICE',
+  MAILER = 'MAILER_SERVICE',
 }
 
 export enum Repositories {
