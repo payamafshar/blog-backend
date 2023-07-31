@@ -1,16 +1,16 @@
 import { UserEntity } from 'src/entities/user.entity';
 
 export type CreateOtpParam = {
-  mobile: number;
+  email: string;
 };
 
 export type CreateOtpResponse = {
-  mobile: number;
+  email: string;
   code: number;
 };
 
 export type CheckOtpParams = {
-  mobile: number;
+  email: string;
   code: number;
 };
 

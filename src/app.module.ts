@@ -5,12 +5,14 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { BlogModule } from './blog/blog.module';
 import { join } from 'path';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
     AuthModule,
     DatabaseModule,
     BlogModule,
+    MailerModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,

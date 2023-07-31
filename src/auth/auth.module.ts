@@ -5,9 +5,10 @@ import { Services } from 'src/utils/constants';
 import { authProvider } from './auth.provider';
 import { DatabaseModule } from 'src/database/database.module';
 import AuthWithCookie from './middlewares/authWithCookie';
+import { MailerModule } from 'src/mailer/mailer.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, MailerModule],
   controllers: [AuthController],
   providers: [
     ...authProvider,

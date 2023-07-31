@@ -7,8 +7,8 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'bigint' })
-  mobile: number;
+  @Column()
+  email: string;
 
   @Column()
   otpCode: number;

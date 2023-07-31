@@ -7,7 +7,7 @@ import {
 } from 'src/utils/types';
 
 export interface IAuthService {
-  getOtp(createOtpParam: CreateOtpParam): Promise<CreateOtpResponse>;
+  getOtp(createOtpParam: CreateOtpParam): Promise<void>;
 
   checkOtp(checkOtpParams: CheckOtpParams, response: Response): void;
 }

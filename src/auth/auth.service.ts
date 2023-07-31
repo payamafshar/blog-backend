@@ -13,8 +13,7 @@ import { randomNumberGenerator } from 'src/utils/helper';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
-import { ParamsDictionary } from 'express-serve-static-core';
-import { ParsedQs } from 'qs';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -22,39 +21,34 @@ export class AuthService implements IAuthService {
     @Inject(Repositories.USER)
     private readonly userRepository: Repository<UserEntity>,
     private readonly configService: ConfigService,
+    private readonly mailService: MailerService,
   ) {}
 
-  async getOtp(createOtpParam: CreateOtpParam): Promise<CreateOtpResponse> {
-    const { mobile } = createOtpParam;
+  async getOtp(createOtpParam: CreateOtpParam): Promise<void> {
+    const { email } = createOtpParam;
 
     const otpCode = randomNumberGenerator();
     const otpExpiresin = new Date().getTime() + 90000;
-    const user = await this.userRepository.findOne({ where: { mobile } });
+    const user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
       const createdOtp = this.userRepository.create({
-        mobile,
+        email,
         otpCode,
         otpExpiresin,
       });
 
-      await this.userRepository.save(createdOtp);
+      const user = await this.userRepository.save(createdOtp);
 
-      return {
-        mobile,
-        code: otpCode,
-      };
+      return await this.mailService.sendUserConfirmation(user);
     }
-    await this.userRepository.update({ mobile }, { otpCode, otpExpiresin });
-    return {
-      mobile,
-      code: otpCode,
-    };
+    await this.userRepository.update({ email }, { otpCode, otpExpiresin });
+    return await this.mailService.sendUserConfirmation(user);
   }
 
   async checkOtp(checkOtpParams: CheckOtpParams, response: Response) {
-    const { mobile, code } = checkOtpParams;
+    const { email, code } = checkOtpParams;
 
-    const user = await this.userRepository.findOne({ where: { mobile } });
+    const user = await this.userRepository.findOne({ where: { email } });
 
     const now = new Date().getTime();
 

@@ -1,4 +1,13 @@
-import { Controller, Inject, Post, Body, Res, Get, Req } from '@nestjs/common';
+import {
+  Controller,
+  Inject,
+  Post,
+  Body,
+  Res,
+  Get,
+  Req,
+  Query,
+} from '@nestjs/common';
 import { Routes, Services } from 'src/utils/constants';
 import { IAuthService } from './auth';
 import { CreateOtpDto } from './dtos/getOtp.dto';
@@ -16,9 +25,9 @@ export class AuthController {
     return this.authService.getOtp(createOtpDto);
   }
 
-  @Post('checkOtp')
+  @Get('checkOtp')
   checkOtpFromUser(
-    @Body() checkOtpDto: CheckOtpDto,
+    @Query() checkOtpDto: CheckOtpDto,
     @Res({ passthrough: true }) response: Response,
   ) {
     return this.authService.checkOtp(checkOtpDto, response);
