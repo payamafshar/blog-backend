@@ -1,17 +1,19 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { BlogController } from './blog.controller';
 import { BlogService } from './blog.service';
 import { Services } from 'src/utils/constants';
 import {
   blogProvider,
   commentProvider,
-  dislikesProvider,
   likesProvider,
   replyCommentProvider,
 } from './blog.providers';
 import { DatabaseModule } from 'src/database/database.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import AuthWithCookie from 'src/auth/middlewares/authWithCookie';
+import { AuthModule } from 'src/auth/auth.module';
+import { authProvider } from 'src/auth/auth.provider';
 
 @Module({
   imports: [
@@ -34,13 +36,20 @@ import { diskStorage } from 'multer';
   providers: [
     ...blogProvider,
     ...likesProvider,
-    ...dislikesProvider,
     ...commentProvider,
     ...replyCommentProvider,
+    ...authProvider,
     {
       provide: Services.BLOG,
       useClass: BlogService,
     },
   ],
 })
-export class BlogModule {}
+export class BlogModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthWithCookie).forRoutes({
+      path: 'blog/like/:blogId',
+      method: RequestMethod.POST,
+    });
+  }
+}

@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { LikeEntity } from './likes.entity';
-import { DislikeEntity } from './dislikes.entity';
 import { CommentEntity } from './comment.entity';
 
 @Entity()
@@ -23,9 +22,9 @@ export class BlogEntity {
   @OneToMany(() => CommentEntity, (comment) => comment.blog)
   comments: CommentEntity[];
 
-  @OneToMany(() => LikeEntity, (like) => like.blog)
+  @OneToMany(() => LikeEntity, (like) => like.blog, { cascade: true })
   likes: LikeEntity[];
-
-  @OneToMany(() => DislikeEntity, (dislike) => dislike.blog)
-  dislikes: DislikeEntity[];
 }
+
+// @OneToMany(() => DislikeEntity, (dislike) => dislike.blog)
+//   dislikes: DislikeEntity[];

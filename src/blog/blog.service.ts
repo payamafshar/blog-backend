@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { IBlogService } from './blog';
 import { CreateBlogParams } from 'src/utils/types';
 import { BlogEntity } from 'src/entities/blog.entity';
@@ -6,12 +11,16 @@ import { Repositories } from 'src/utils/constants';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { extname } from 'path';
+import { LikeEntity } from 'src/entities/likes.entity';
+import { UserEntity } from 'src/entities/user.entity';
 
 @Injectable()
 export class BlogService implements IBlogService {
   constructor(
     @Inject(Repositories.BLOG)
     private readonly blogRepository: Repository<BlogEntity>,
+    @Inject(Repositories.LIKES)
+    private readonly likeRepository: Repository<LikeEntity>,
     private readonly configService: ConfigService,
   ) {}
 
@@ -31,6 +40,56 @@ export class BlogService implements IBlogService {
     });
 
     return this.blogRepository.save(instanceBlog);
+  }
+
+  async getAll(): Promise<BlogEntity[]> {
+    const blogs = await this.blogRepository.find({
+      relations: ['comments', 'likes'],
+    });
+
+    return blogs;
+  }
+
+  async getBlogById(blogId: number): Promise<BlogEntity> {
+    const blog = await this.blogRepository.findOne({
+      where: { id: blogId },
+      relations: ['comments', 'likes'],
+    });
+
+    if (!blog) throw new BadRequestException('blog not exists');
+    return blog;
+  }
+
+  async getBlogBySlug(slug: string): Promise<BlogEntity> {
+    const blog = await this.blogRepository.findOne({ where: { slug } });
+
+    return blog;
+  }
+
+  async likeToggleBlogById(
+    blogId: number,
+    user: UserEntity,
+  ): Promise<LikeEntity> {
+    const blog = await this.blogRepository.findOne({
+      where: { id: blogId },
+    });
+
+    if (!blog) throw new NotFoundException('blog not founded');
+
+    const findedLikeWithBlogId = await this.likeRepository.findOne({
+      where: { blog, user },
+    });
+
+    if (!findedLikeWithBlogId) {
+      const instanceLike = this.likeRepository.create({ blog, user });
+
+      return this.likeRepository.save(instanceLike);
+    }
+
+    findedLikeWithBlogId.user = null;
+    findedLikeWithBlogId.blog = null;
+
+    return this.likeRepository.save(findedLikeWithBlogId);
   }
 
   validateIncominImage(file: Express.Multer.File) {

@@ -1,6 +1,5 @@
 import { BlogEntity } from 'src/entities/blog.entity';
 import { CommentEntity } from 'src/entities/comment.entity';
-import { DislikeEntity } from 'src/entities/dislikes.entity';
 import { LikeEntity } from 'src/entities/likes.entity';
 import { ReplyCommentEntity } from 'src/entities/reply-comment.entity';
 import { DATA_SOURCE_TOKEN, Repositories } from 'src/utils/constants';
@@ -22,14 +21,7 @@ export const commentProvider = [
     inject: [DATA_SOURCE_TOKEN],
   },
 ];
-export const dislikesProvider = [
-  {
-    provide: Repositories.DISLIKE,
-    useFactory: (dataSource: DataSource) =>
-      dataSource.getRepository(DislikeEntity),
-    inject: [DATA_SOURCE_TOKEN],
-  },
-];
+
 export const likesProvider = [
   {
     provide: Repositories.LIKES,
