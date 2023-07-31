@@ -16,7 +16,7 @@ import { join } from 'path';
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '../uploads'),
+      rootPath: join(__dirname, '../uploads'),
       serveRoot: '/uploads/',
     }),
   ],

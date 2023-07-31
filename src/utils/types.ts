@@ -17,3 +17,10 @@ export type CheckOtpParams = {
 export interface AuthenticatedRequest extends Request {
   currentUser: UserEntity;
 }
+
+export type CreateBlogParams = {
+  content: string;
+
+  slug: string;
+  title: string;
+};

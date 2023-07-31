@@ -14,6 +14,12 @@ export class BlogEntity {
   @Column({ type: 'text' })
   content: string;
 
+  @Column({ nullable: true })
+  image: string;
+
+  @Column({ unique: true })
+  slug: string;
+
   @OneToMany(() => CommentEntity, (comment) => comment.blog)
   comments: CommentEntity[];
 
