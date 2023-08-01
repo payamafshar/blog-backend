@@ -157,6 +157,27 @@ export class BlogService implements IBlogService {
     return savedReplyComment;
   }
 
+  async acceptCommentByAdmin(commnetId: number): Promise<void> {
+    const findedComment = await this.commentRepository.findOne({
+      where: { id: commnetId, isAccepted: false },
+    });
+
+    await this.commentRepository.update(
+      { id: commnetId },
+      { isAccepted: true },
+    );
+  }
+  async acceptReplyCommentByAdmin(replyId: number): Promise<void> {
+    const findedReplyComment = await this.replyCommentRepository.findOne({
+      where: { id: replyId, isAccepted: false },
+    });
+
+    await this.replyCommentRepository.update(
+      { id: replyId },
+      { isAccepted: true },
+    );
+  }
+
   validateIncominImage(file: Express.Multer.File) {
     let image: string;
     if (file) {

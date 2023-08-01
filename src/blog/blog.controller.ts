@@ -88,4 +88,17 @@ export class BlogController {
       user,
     );
   }
+
+  @Post('comment/:commentId')
+  async acceptCommentByAdmin(
+    @Param('commentId', ParseIntPipe) commentId: number,
+  ) {
+    return this.blogService.acceptCommentByAdmin(commentId);
+  }
+  @Post('replyComment/:replyId')
+  async acceptReplyCommentByAdmin(
+    @Param('replyId', ParseIntPipe) replyId: number,
+  ) {
+    return this.blogService.acceptReplyCommentByAdmin(replyId);
+  }
 }

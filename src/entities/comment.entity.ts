@@ -18,6 +18,9 @@ export class CommentEntity {
   @Column()
   content: string;
 
+  @Column({ nullable: true })
+  isAccepted: boolean;
+
   @ManyToOne(() => BlogEntity, (blog) => blog.comments)
   @JoinColumn({ name: 'blog_id' })
   blog: BlogEntity;

@@ -32,4 +32,8 @@ export interface IBlogService {
     param: CreateCommentParam,
     user: UserEntity,
   ): Promise<ReplyCommentEntity>;
+
+  acceptCommentByAdmin(commnetId: number): void;
+
+  acceptReplyCommentByAdmin(reolyId: number): void;
 }
