@@ -1,6 +1,14 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CommentEntity } from './comment.entity';
 import { LikeEntity } from './likes.entity';
+import { ReplyCommentEntity } from './reply-comment.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {

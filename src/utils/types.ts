@@ -24,3 +24,7 @@ export type CreateBlogParams = {
   slug: string;
   title: string;
 };
+
+export type CreateCommentParam = {
+  content: string;
+};

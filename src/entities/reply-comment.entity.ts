@@ -4,8 +4,10 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { CommentEntity } from './comment.entity';
+import { UserEntity } from './user.entity';
 
 @Entity()
 export class ReplyCommentEntity {
@@ -18,4 +20,8 @@ export class ReplyCommentEntity {
   @ManyToOne(() => CommentEntity, (comment) => comment.replies)
   @JoinColumn({ name: 'comment_id' })
   comment: CommentEntity;
+
+  @OneToOne(() => UserEntity)
+  @JoinColumn()
+  user: UserEntity;
 }

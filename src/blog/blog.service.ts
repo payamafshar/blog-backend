@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { IBlogService } from './blog';
-import { CreateBlogParams } from 'src/utils/types';
+import { CreateBlogParams, CreateCommentParam } from 'src/utils/types';
 import { BlogEntity } from 'src/entities/blog.entity';
 import { Repositories } from 'src/utils/constants';
 import { Repository } from 'typeorm';
@@ -13,6 +13,8 @@ import { ConfigService } from '@nestjs/config';
 import { extname } from 'path';
 import { LikeEntity } from 'src/entities/likes.entity';
 import { UserEntity } from 'src/entities/user.entity';
+import { CommentEntity } from 'src/entities/comment.entity';
+import { ReplyCommentEntity } from 'src/entities/reply-comment.entity';
 
 @Injectable()
 export class BlogService implements IBlogService {
@@ -21,6 +23,10 @@ export class BlogService implements IBlogService {
     private readonly blogRepository: Repository<BlogEntity>,
     @Inject(Repositories.LIKES)
     private readonly likeRepository: Repository<LikeEntity>,
+    @Inject(Repositories.COMMENT)
+    private readonly commentRepository: Repository<CommentEntity>,
+    @Inject(Repositories.REPLY_COMMENT)
+    private readonly replyCommentRepository: Repository<ReplyCommentEntity>,
     private readonly configService: ConfigService,
   ) {}
 
@@ -44,7 +50,12 @@ export class BlogService implements IBlogService {
 
   async getAll(): Promise<BlogEntity[]> {
     const blogs = await this.blogRepository.find({
-      relations: ['comments', 'likes'],
+      relations: [
+        'comments',
+        'likes',
+        'comments.replies',
+        'comments.replies.user',
+      ],
     });
 
     return blogs;
@@ -95,6 +106,55 @@ export class BlogService implements IBlogService {
   async deleteBlogById(blogId: number): Promise<void> {
     await this.likeRepository.delete({ blog: { id: blogId } });
     await this.blogRepository.delete(blogId);
+  }
+
+  async createCommentForBlog(
+    blogId: number,
+    user: UserEntity,
+    param: CreateCommentParam,
+  ): Promise<CommentEntity> {
+    const { content } = param;
+    const blog = await this.blogRepository.findOne({ where: { id: blogId } });
+    if (!blog) throw new NotFoundException('blog Not Found');
+
+    const commentInstance = this.commentRepository.create({
+      blog,
+      user,
+      content,
+    });
+
+    const savedComment = await this.commentRepository.save(commentInstance);
+
+    return savedComment;
+  }
+
+  async createReplyCommnet(
+    blogId: number,
+    commentId: number,
+    param: CreateCommentParam,
+    user: UserEntity,
+  ): Promise<ReplyCommentEntity> {
+    const { content } = param;
+    const blog = await this.blogRepository.findOne({
+      where: { id: blogId },
+      relations: ['comments'],
+    });
+
+    if (!blog) throw new NotFoundException('blog Not Found');
+
+    const findMainComment = blog.comments.find((c) => c.id == commentId);
+
+    const replyInstance = this.replyCommentRepository.create({
+      comment: findMainComment,
+      user,
+      content,
+    });
+
+    const savedReplyComment = await this.replyCommentRepository.save(
+      replyInstance,
+    );
+
+    return savedReplyComment;
   }
 
   validateIncominImage(file: Express.Multer.File) {

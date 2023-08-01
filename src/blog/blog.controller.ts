@@ -16,6 +16,8 @@ import { IBlogService } from './blog';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthUser } from 'src/utils/decorators';
 import { UserEntity } from 'src/entities/user.entity';
+import { CreateCommentDto } from './dtos/createComment.dto';
+import { CreateReplyCommentDto } from './dtos/createReplyComment.dto';
 
 @Controller(Routes.BLOG)
 export class BlogController {
@@ -57,5 +59,33 @@ export class BlogController {
   @Delete('/:blogId')
   deleteBlogById(@Param('blogId', ParseIntPipe) blogId: number) {
     return this.blogService.deleteBlogById(blogId);
+  }
+
+  @Post('createComment/:blogId')
+  async createComment(
+    @Param('blogId', ParseIntPipe) blogId: number,
+    @AuthUser() user: UserEntity,
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
+    return this.blogService.createCommentForBlog(
+      blogId,
+      user,
+      createCommentDto,
+    );
+  }
+
+  @Post(':blogId/comment/:commentId')
+  async createReplyComment(
+    @Param('blogId', ParseIntPipe) blogId: number,
+    @Param('commentId', ParseIntPipe) commentId: number,
+    @Body() createCommnetDto: CreateReplyCommentDto,
+    @AuthUser() user: UserEntity,
+  ) {
+    return this.blogService.createReplyCommnet(
+      blogId,
+      commentId,
+      createCommnetDto,
+      user,
+    );
   }
 }

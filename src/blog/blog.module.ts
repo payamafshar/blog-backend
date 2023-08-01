@@ -47,9 +47,19 @@ import { authProvider } from 'src/auth/auth.provider';
 })
 export class BlogModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthWithCookie).forRoutes({
-      path: 'blog/like/:blogId',
-      method: RequestMethod.POST,
-    });
+    consumer.apply(AuthWithCookie).forRoutes(
+      {
+        path: 'blog/like/:blogId',
+        method: RequestMethod.POST,
+      },
+      {
+        path: 'blog/createComment/:blogId',
+        method: RequestMethod.POST,
+      },
+      {
+        path: ':blogId/comment/:commentId',
+        method: RequestMethod.POST,
+      },
+    );
   }
 }

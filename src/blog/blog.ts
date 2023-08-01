@@ -1,7 +1,9 @@
 import { BlogEntity } from 'src/entities/blog.entity';
+import { CommentEntity } from 'src/entities/comment.entity';
 import { LikeEntity } from 'src/entities/likes.entity';
+import { ReplyCommentEntity } from 'src/entities/reply-comment.entity';
 import { UserEntity } from 'src/entities/user.entity';
-import { CreateBlogParams } from 'src/utils/types';
+import { CreateBlogParams, CreateCommentParam } from 'src/utils/types';
 
 export interface IBlogService {
   createBlog(
@@ -17,4 +19,17 @@ export interface IBlogService {
   likeToggleBlogById(blogId: number, user: UserEntity): Promise<LikeEntity>;
 
   deleteBlogById(blogId: number): void;
+
+  createCommentForBlog(
+    blogId: number,
+    user: UserEntity,
+    param: CreateCommentParam,
+  ): Promise<CommentEntity>;
+
+  createReplyCommnet(
+    blogId: number,
+    commentId: number,
+    param: CreateCommentParam,
+    user: UserEntity,
+  ): Promise<ReplyCommentEntity>;
 }
