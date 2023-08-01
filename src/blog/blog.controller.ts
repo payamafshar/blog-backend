@@ -74,7 +74,7 @@ export class BlogController {
     );
   }
 
-  @Post(':blogId/comment/:commentId')
+  @Post(':blogId/commentReply/:commentId')
   async createReplyComment(
     @Param('blogId', ParseIntPipe) blogId: number,
     @Param('commentId', ParseIntPipe) commentId: number,
@@ -89,13 +89,13 @@ export class BlogController {
     );
   }
 
-  @Post('comment/:commentId')
+  @Post('admin/comment/:commentId')
   async acceptCommentByAdmin(
     @Param('commentId', ParseIntPipe) commentId: number,
   ) {
     return this.blogService.acceptCommentByAdmin(commentId);
   }
-  @Post('replyComment/:replyId')
+  @Post('admin/replyComment/:replyId')
   async acceptReplyCommentByAdmin(
     @Param('replyId', ParseIntPipe) replyId: number,
   ) {

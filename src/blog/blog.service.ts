@@ -139,6 +139,7 @@ export class BlogService implements IBlogService {
       where: { id: blogId },
       relations: ['comments'],
     });
+    console.log(user);
 
     if (!blog) throw new NotFoundException('blog Not Found');
 

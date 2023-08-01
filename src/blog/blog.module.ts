@@ -57,7 +57,7 @@ export class BlogModule {
         method: RequestMethod.POST,
       },
       {
-        path: ':blogId/comment/:commentId',
+        path: 'blog/:blogId/commentReply/:commentId',
         method: RequestMethod.POST,
       },
     );
